@@ -1,5 +1,6 @@
 
 
+use std::collections::VecDeque;
 
 #[derive(Debug, PartialEq)]
 struct Node<T> {
@@ -7,7 +8,7 @@ struct Node<T> {
     left: Option<Box<Node<T>>>,
     right: Option<Box<Node<T>>>,
 }
-impl<T> Node<T> {
+impl<T: PartialEq> Node<T> {
     fn new(root: T) -> Self {
         Self {
             root,
@@ -18,7 +19,7 @@ impl<T> Node<T> {
     fn build_tree(seq: &[i32], idx: &mut i32) -> Option<Box<Node<i32>>> {
         *idx += 1;
 
-        if *idx >= seq.len() as i32 || seq[*idx as usize] == -1  {
+        if *idx >= seq.len() as i32 || seq[*idx as usize] == -1 {
             return None;
         }
         // let root = seq[*idx as usize];
@@ -35,13 +36,55 @@ impl<T> Node<T> {
         T: std::fmt::Debug,
     {
         print!("{:?}", self.root);
-        
-        if let Some(ref left ) = self.left {
+
+        if let Some(ref left) = self.left {
             left.preorder();
         }
 
         if let Some(ref right) = self.right {
             right.preorder();
+        }
+    }
+    fn inorder(&self)
+    where
+        T: std::fmt::Debug,
+    {
+        if let Some(ref left) = self.left {
+            left.inorder();
+        }
+        print!("{:?}", self.root);
+        if let Some(ref right) = self.right {
+            right.inorder();
+        }
+    }
+    fn postorder(&self)
+    where
+        T: std::fmt::Debug,
+    {
+        if let Some(ref left) = self.left {
+            left.postorder();
+        }
+        if let Some(ref right) = self.right {
+            right.postorder();
+        }
+        print!("{:?}", self.root);
+    }
+    fn levelorder(&self)
+    where T: std::fmt::Debug,
+    {
+        let mut q:VecDeque<_>  = VecDeque::new();
+        q.push_back(self);
+
+        while q.len() > 0 {
+            let node = q.pop_front().unwrap();
+            print!("{:?}",node.root);
+            if let Some(ref left) = self.left {
+                q.push_back(left);
+            }
+            if let Some(ref right) = self.right {
+                q.push_back(right);
+            }
+
         }
     }
 }
@@ -53,5 +96,10 @@ fn main() {
 
     let tree = Node::<i32>::build_tree(&seq, &mut idx).unwrap();
 
-    print!("{:?}",tree.preorder());
+    print!("{:?}", tree.preorder());
+    println!();
+    print!("{:?}", tree.inorder());
+    println!();
+    print!("{:?}", tree.postorder());
+
 }

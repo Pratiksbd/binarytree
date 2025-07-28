@@ -75,16 +75,15 @@ impl<T: PartialEq> Node<T> {
         let mut q:VecDeque<_>  = VecDeque::new();
         q.push_back(self);
 
-        while q.len() > 0 {
+        while !q.is_empty() {
             let node = q.pop_front().unwrap();
             print!("{:?}",node.root);
-            if let Some(ref left) = self.left {
+            if let Some(ref left) = node.left {
                 q.push_back(left);
             }
-            if let Some(ref right) = self.right {
+            if let Some(ref right) = node.right {
                 q.push_back(right);
             }
-
         }
     }
 }
@@ -96,10 +95,14 @@ fn main() {
 
     let tree = Node::<i32>::build_tree(&seq, &mut idx).unwrap();
 
-    print!("{:?}", tree.preorder());
+    tree.preorder();
     println!();
-    print!("{:?}", tree.inorder());
-    println!();
-    print!("{:?}", tree.postorder());
 
+    tree.inorder();
+    println!();
+
+    tree.postorder();
+    
+    println!();
+    tree.levelorder();
 }
